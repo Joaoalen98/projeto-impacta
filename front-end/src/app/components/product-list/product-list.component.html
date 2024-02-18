@@ -1,0 +1,31 @@
+<p-button (onClick)="navigateToProductSave(0)">
+    Novo Produto
+</p-button>
+
+<p-card header="Produtos">
+    <p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price | currency:'BRL' }}</td>
+                <td>{{ product.stock }}</td>
+                <td>
+                    <p-button severity="success" size="small" (onClick)="navigateToProductSave(product.id)">
+                        <i class="pi pi-pencil"></i>
+                    </p-button>
+                    <p-button severity="danger" size="small" (onClick)="deleteProduct(product.id)">
+                        <i class="pi pi-trash"></i>
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
