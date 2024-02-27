@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.config.security;
+package com.joaoalencar.projetoimpacta.controller.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.models.errors.exceptions;
+package com.joaoalencar.projetoimpacta.service.exception;
 
 public class BadRequestException extends RuntimeException {
     

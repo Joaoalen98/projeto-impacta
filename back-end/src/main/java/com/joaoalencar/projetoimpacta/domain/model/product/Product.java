@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.models.entities;
+package com.joaoalencar.projetoimpacta.domain.model.product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

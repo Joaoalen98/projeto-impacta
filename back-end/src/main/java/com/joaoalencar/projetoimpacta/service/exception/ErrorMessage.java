@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.models.errors;
+package com.joaoalencar.projetoimpacta.service.exception;
 
 public class ErrorMessage {
     

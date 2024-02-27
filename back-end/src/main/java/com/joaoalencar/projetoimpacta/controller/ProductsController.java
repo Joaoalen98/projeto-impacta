@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.controllers;
+package com.joaoalencar.projetoimpacta.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.joaoalencar.projetoimpacta.models.DTOs.ProductDTO;
-import com.joaoalencar.projetoimpacta.services.ProductService;
+import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
+import com.joaoalencar.projetoimpacta.service.ProductService;
 
 @RestController
 @RequestMapping("/api/v1/products")

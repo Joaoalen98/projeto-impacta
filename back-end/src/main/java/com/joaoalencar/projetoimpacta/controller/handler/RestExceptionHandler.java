@@ -1,13 +1,13 @@
-package com.joaoalencar.projetoimpacta.handlers;
+package com.joaoalencar.projetoimpacta.controller.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.joaoalencar.projetoimpacta.models.errors.ErrorMessage;
-import com.joaoalencar.projetoimpacta.models.errors.exceptions.BadRequestException;
-import com.joaoalencar.projetoimpacta.models.errors.exceptions.ResourceNotFoundException;
+import com.joaoalencar.projetoimpacta.service.exception.ErrorMessage;
+import com.joaoalencar.projetoimpacta.service.exception.BadRequestException;
+import com.joaoalencar.projetoimpacta.service.exception.ResourceNotFoundException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {

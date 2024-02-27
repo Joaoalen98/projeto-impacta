@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.models.DTOs;
+package com.joaoalencar.projetoimpacta.service.dto;
 
 import lombok.Getter;
 import lombok.Setter;

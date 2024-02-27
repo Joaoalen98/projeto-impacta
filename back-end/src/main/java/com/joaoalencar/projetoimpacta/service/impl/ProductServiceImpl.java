@@ -1,4 +1,4 @@
-package com.joaoalencar.projetoimpacta.services.impl;
+package com.joaoalencar.projetoimpacta.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.joaoalencar.projetoimpacta.models.DTOs.ProductDTO;
-import com.joaoalencar.projetoimpacta.models.entities.Product;
-import com.joaoalencar.projetoimpacta.models.errors.exceptions.ResourceNotFoundException;
-import com.joaoalencar.projetoimpacta.repositories.ProductRepository;
-import com.joaoalencar.projetoimpacta.services.ProductService;
+import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
+import com.joaoalencar.projetoimpacta.domain.model.product.Product;
+import com.joaoalencar.projetoimpacta.service.exception.ResourceNotFoundException;
+import com.joaoalencar.projetoimpacta.repository.ProductRepository;
+import com.joaoalencar.projetoimpacta.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
