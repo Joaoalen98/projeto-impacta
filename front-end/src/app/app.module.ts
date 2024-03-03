@@ -10,14 +10,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { MenubarModule } from 'primeng/menubar';
+
 import { InputTextModule } from 'primeng/inputtext';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MenuComponent } from './components/menu/menu.component';
+import { SupplierListComponent } from './components/supplier-list/supplier-list.component';
+import { SupplierSaveComponent } from './components/supplier-save/supplier-save.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductListComponent,
-    ProductSaveComponent
+    ProductSaveComponent,
+    MenuComponent,
+    SupplierListComponent,
+    SupplierSaveComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +34,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     TableModule,
     ButtonModule,
     CardModule,
-    InputTextModule
+    InputTextModule,
+    MenubarModule
   ],
   providers: [
     provideClientHydration(),

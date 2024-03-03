@@ -1,0 +1,20 @@
+@if (this.id === 0) {
+    <h2>Adicionar Fornecedor:</h2>
+} @else {
+    <h2>Editar Fornecedor:</h2>
+}
+
+<form [formGroup]="form" class="form">
+    <span class="p-float-label form-container">
+        <input pInputText id="name" formControlName="name" />
+        <label for="name">Nome</label>
+    </span>
+    <span class="p-float-label form-container">
+        <input pInputText id="document" formControlName="document" />
+        <label for="document">Documento</label>
+    </span>
+
+    <p-button severity="success" (onClick)="saveSupplier()" [disabled]="!this.form.valid">
+        Salvar
+    </p-button>
+</form>

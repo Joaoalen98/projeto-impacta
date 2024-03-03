@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductSaveComponent } from './components/product-save/product-save.component';
+import { SupplierListComponent } from './components/supplier-list/supplier-list.component';
+import { SupplierSaveComponent } from './components/supplier-save/supplier-save.component';
 
 const routes: Routes = [
   {
@@ -17,6 +19,14 @@ const routes: Routes = [
   {
     path: 'produtos/adicionar',
     component: ProductSaveComponent
+  },
+  {
+    path: 'fornecedores',
+    component: SupplierListComponent
+  },
+  {
+    path: 'fornecedores/adicionar',
+    component: SupplierSaveComponent
   },
 ];
 
