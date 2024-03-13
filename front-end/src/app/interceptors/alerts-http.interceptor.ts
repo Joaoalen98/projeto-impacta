@@ -1,4 +1,4 @@
-import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 
@@ -12,8 +12,8 @@ export class AlertsHttpInterceptor implements HttpInterceptor {
             .pipe(
                 tap({
                     next: (res) => { },
-                    error: (res) => {
-                        alert(res.message);
+                    error: (res: HttpErrorResponse) => {
+                        alert(res.error.message);
                     }
                 }),
             );
