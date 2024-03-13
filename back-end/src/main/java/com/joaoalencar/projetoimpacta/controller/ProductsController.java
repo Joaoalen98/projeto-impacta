@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
+
+import jakarta.validation.Valid;
+
 import com.joaoalencar.projetoimpacta.service.ProductService;
 
 @RestController
@@ -36,7 +39,7 @@ public class ProductsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ProductDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody ProductDTO dto) {
         var product = productService.create(dto);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }

@@ -73,8 +73,8 @@ export class ProductSaveComponent implements OnInit {
       id: this.id,
       name: this.name?.value,
       description: this.description?.value,
-      price: this.price?.value,
-      stock: this.stock?.value
+      price: this.price?.value.toString().replace(',', '.'),
+      stock: this.stock?.value.toString().replace(',', '.')
     };
 
     if (this.id === 0) {
@@ -84,7 +84,7 @@ export class ProductSaveComponent implements OnInit {
             this.savedSuccessfully();
           },
           error: (res) => {
-
+        
           }
         });
     } else {
@@ -94,7 +94,7 @@ export class ProductSaveComponent implements OnInit {
             this.savedSuccessfully();
           },
           error: (res) => {
-
+        
           }
         });
     }
