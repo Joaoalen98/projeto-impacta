@@ -38,8 +38,11 @@ export class SupplierListComponent implements OnInit {
       this.apiService.deleteSupplier(id)
         .subscribe({
           next: (res) => {
-            alert('Fornecedor deletado com sucesso');
             this.suppliers = this.suppliers.filter(p => p.id !== id);
+
+            setTimeout(() => {
+              alert('Fornecedor deletado com sucesso');
+            }, 500);
           },
           error: (res) => {
             alert('Erro ao deletar Fornecedor');
