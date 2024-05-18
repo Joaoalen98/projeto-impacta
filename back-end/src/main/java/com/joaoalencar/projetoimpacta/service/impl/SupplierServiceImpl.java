@@ -1,6 +1,7 @@
 package com.joaoalencar.projetoimpacta.service.impl;
 
 import com.joaoalencar.projetoimpacta.domain.model.supplier.Supplier;
+import com.joaoalencar.projetoimpacta.repository.ProductRepository;
 import com.joaoalencar.projetoimpacta.repository.SupplierRepository;
 import com.joaoalencar.projetoimpacta.service.SupplierService;
 import com.joaoalencar.projetoimpacta.service.dto.SupplierDTO;
@@ -16,9 +17,11 @@ import java.util.Optional;
 public class SupplierServiceImpl implements SupplierService {
 
     private SupplierRepository supplierRepository;
+    private ProductRepository productRepository;
 
-    public SupplierServiceImpl(SupplierRepository supplierRepository) {
+    public SupplierServiceImpl(SupplierRepository supplierRepository, ProductRepository productRepository) {
         this.supplierRepository = supplierRepository;
+        this.productRepository = productRepository;
     }
 
     private Supplier getEntityById(int id) {
@@ -73,6 +76,12 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Optional<SupplierDTO> delete(int id) {
+        var products = productRepository.findBySupplierId(id);
+
+        if (products.size() > 0) {
+            throw new BadRequestException("Este fornecedor possui produtos associados à ele, delete-os primeiro");
+        }
+
         var supplier = getEntityById(id);
         supplierRepository.delete(supplier);
 
