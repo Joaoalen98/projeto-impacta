@@ -27,4 +27,6 @@ public class ProductDTO {
 
     @Min(value = 1, message = "Quantidade não pode ser menor que 1")
     private int stock;
+
+    private Integer supplierId;
 }

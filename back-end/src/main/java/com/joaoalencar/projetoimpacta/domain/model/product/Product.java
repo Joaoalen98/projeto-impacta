@@ -30,4 +30,7 @@ public class Product {
 
     @Column(name = "stock")
     private int stock;
+
+    @Column(name = "supplier_id")
+    private Integer supplierId;
 }

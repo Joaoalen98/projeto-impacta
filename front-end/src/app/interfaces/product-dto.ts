@@ -4,4 +4,5 @@ export interface ProductDto {
     description: string;
     price: number;
     stock: number;
+    supplierId?: number;
 }

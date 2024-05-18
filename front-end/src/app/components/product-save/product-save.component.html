@@ -21,6 +21,14 @@
         <input pInputText id="stock" formControlName="stock" />
         <label for="stock">Estoque</label>
     </span>
+    <div class="form-container">
+        <p-dropdown 
+            [options]="suppliers" 
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Selecione um fornecedor"
+            formControlName="supplierId" />
+    </div>
 
     <p-button severity="success" (onClick)="saveProduct()" [disabled]="!this.form.valid">
         Salvar

@@ -17,6 +17,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const alertsHttpInterceptor: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -35,13 +37,15 @@ const alertsHttpInterceptor: Provider = {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     ReactiveFormsModule,
     TableModule,
     ButtonModule,
     CardModule,
     InputTextModule,
-    MenubarModule
+    MenubarModule,
+    DropdownModule
   ],
   providers: [
     provideClientHydration(),

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SupplierDTO } from '../../interfaces/supplier-dto';
 
 @Component({
   selector: 'app-product-save',
@@ -16,9 +17,11 @@ export class ProductSaveComponent implements OnInit {
     name: ['', Validators.required],
     description: ['', Validators.required],
     price: ['', Validators.required],
-    stock: ['', Validators.required]
+    stock: ['', Validators.required],
+    supplierId: [''],
   });
 
+  suppliers: SupplierDTO[] = [];
 
   public get name() {
     return this.form.get('name');
@@ -36,6 +39,10 @@ export class ProductSaveComponent implements OnInit {
     return this.form.get('stock');
   }
 
+  public get supplierId() {
+    return this.form.get('supplierId');
+  }
+
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
@@ -48,9 +55,22 @@ export class ProductSaveComponent implements OnInit {
 
       if (p['id'] != '0') {
         this.id = p['id'];
-        this.findProductById(p['id']);
+        this.findAllSuppliers();
       }
     });
+  }
+
+  findAllSuppliers() {
+    this.apiService.findAllSuppliers()
+      .subscribe({
+        next: (res) => {
+          this.suppliers = res;
+          this.findProductById(this.id);
+        },
+        error: (res) => {
+          console.log(res);
+        }
+      });
   }
 
   findProductById(id: number) {
@@ -61,6 +81,7 @@ export class ProductSaveComponent implements OnInit {
           this.description?.setValue(res.description);
           this.price?.setValue(res.price);
           this.stock?.setValue(res.stock);
+          this.supplierId?.setValue(res.supplierId);
         },
         error: (res) => {
 
@@ -74,7 +95,8 @@ export class ProductSaveComponent implements OnInit {
       name: this.name?.value,
       description: this.description?.value,
       price: this.price?.value.toString().replace(',', '.'),
-      stock: this.stock?.value.toString().replace(',', '.')
+      stock: this.stock?.value.toString().replace(',', '.'),
+      supplierId: this.supplierId?.value,
     };
 
     if (this.id === 0) {
