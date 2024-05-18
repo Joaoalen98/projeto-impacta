@@ -51,12 +51,8 @@ export class ProductSaveComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(p => {
-      console.log(p);
-
-      if (p['id'] != '0') {
-        this.id = p['id'];
-        this.findAllSuppliers();
-      }
+      this.id = parseInt(p['id']);
+      this.findAllSuppliers();
     });
   }
 
@@ -64,8 +60,12 @@ export class ProductSaveComponent implements OnInit {
     this.apiService.findAllSuppliers()
       .subscribe({
         next: (res) => {
+          console.log(res);
           this.suppliers = res;
-          this.findProductById(this.id);
+
+          if (this.id !== 0) {
+            this.findProductById(this.id);
+          }
         },
         error: (res) => {
           console.log(res);
