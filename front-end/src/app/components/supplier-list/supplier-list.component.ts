@@ -45,7 +45,7 @@ export class SupplierListComponent implements OnInit {
             }, 500);
           },
           error: (res) => {
-            alert('Erro ao deletar Fornecedor');
+            
           }
         });
     }

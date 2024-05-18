@@ -60,7 +60,6 @@ export class ProductSaveComponent implements OnInit {
     this.apiService.findAllSuppliers()
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.suppliers = res;
 
           if (this.id !== 0) {

@@ -38,8 +38,11 @@ export class ProductListComponent implements OnInit {
       this.apiService.deleteProduct(id)
         .subscribe({
           next: (res) => {
-            alert('Produto deletado com sucesso');
             this.products = this.products.filter(p => p.id !== id);
+
+            setTimeout(() => {
+              alert('Produto deletado com sucesso');
+            }, 500);
           },
           error: (res) => {
             alert('Erro ao deletar produto');
