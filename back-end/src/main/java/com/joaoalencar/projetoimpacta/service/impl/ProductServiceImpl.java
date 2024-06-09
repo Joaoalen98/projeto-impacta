@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import com.joaoalencar.projetoimpacta.domain.model.product.ProductImage;
 import com.joaoalencar.projetoimpacta.repository.ProductImageRepository;
+import com.joaoalencar.projetoimpacta.service.dto.ProductImageDTO;
+import com.joaoalencar.projetoimpacta.service.exception.BadRequestException;
 import com.joaoalencar.projetoimpacta.service.exception.FileUploadException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
     public String uploadImage(MultipartFile imageFile, Integer productId) {
         try {
             String fileName = imageFile.getOriginalFilename()
-                    .replace(" ", "")
+                    .replace(" ", "_")
                     .toLowerCase();
 
             Path uploadPath = Path.of(uploadDirectory);
@@ -118,31 +120,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<String> getImages(Integer productId) {
+    public List<ProductImageDTO> getImages(Integer productId) {
         return productImageRepository.findByProductId(productId)
                 .stream()
-                .map(pi -> "/files/" + pi.getFileName())
+                .map(pi -> new ProductImageDTO(pi.getId(), "http://localhost:8080/files/" + pi.getFileName()))
                 .toList();
     }
 
     @Override
-    public String deleteImage(Integer productImageId) {
+    public void deleteImage(Integer productImageId) {
         try {
-            var productImage = productImageRepository.findById(productImageId);
+            var productImage = productImageRepository.findById(productImageId)
+                    .orElseThrow(() -> new BadRequestException("Arquivo não encontrado"));
 
-            if (productImage.isPresent()) {
-                productImageRepository.delete(productImage.get());
+            productImageRepository.delete(productImage);
 
-                Path imagePath = Path.of(uploadDirectory, productImage.get().getFileName());
-
-                if (Files.exists(imagePath)) {
-                    Files.delete(imagePath);
-                }
-
-                return "Success";
+            Path imagePath = Path.of(uploadDirectory, productImage.getFileName());
+            if (Files.exists(imagePath)) {
+                Files.delete(imagePath);
             }
-
-            return "Error";
         } catch (Exception e) {
             throw new FileUploadException(e.getMessage(), e);
         }
