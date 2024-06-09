@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ProductDto } from '../interfaces/product-dto';
 import { SupplierDTO } from '../interfaces/supplier-dto';
+import { ProductImageDTO } from '../interfaces/product-image-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,7 @@ export class ApiService {
   }
 
   getProductImages(productId: number) {
-    return this.http.get<string[]>(this.url + `api/v1/products/images/${productId}`)
+    return this.http.get<ProductImageDTO[]>(this.url + `api/v1/products/images/${productId}`)
   }
 
   deleteProductImage(fileName: string) {

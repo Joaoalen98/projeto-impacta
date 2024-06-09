@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupplierDTO } from '../../interfaces/supplier-dto';
 import { FileUpload, UploadEvent } from 'primeng/fileupload';
+import { ProductImageDTO } from '../../interfaces/product-image-dto';
 
 @Component({
   selector: 'app-product-save',
@@ -21,6 +22,23 @@ export class ProductSaveComponent implements OnInit {
     stock: ['', Validators.required],
     supplierId: [''],
   });
+
+  images: any[] | undefined;
+
+  responsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 5
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1
+    }
+  ];
 
   suppliers: SupplierDTO[] = [];
 
@@ -57,6 +75,7 @@ export class ProductSaveComponent implements OnInit {
     this.route.queryParams.subscribe(p => {
       this.id = parseInt(p['id']);
       this.findAllSuppliers();
+      this.findAllProductImages();
     });
   }
 
@@ -69,6 +88,18 @@ export class ProductSaveComponent implements OnInit {
           if (this.id !== 0) {
             this.findProductById(this.id);
           }
+        },
+        error: (res) => {
+          console.log(res);
+        }
+      });
+  }
+
+  findAllProductImages() {
+    this.apiService.getProductImages(this.id)
+      .subscribe({
+        next: (res) => {
+          this.images = res;
         },
         error: (res) => {
           console.log(res);
@@ -139,8 +170,8 @@ export class ProductSaveComponent implements OnInit {
     this.apiService.uploadImage(form, this.id)
       .subscribe({
         next: (res) => {
-
-        }, 
+          this.findAllProductImages();
+        },
         error: (err) => {
           console.log(err);
         }

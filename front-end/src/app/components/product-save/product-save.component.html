@@ -1,47 +1,66 @@
 @if (this.id === 0) {
     <h2>Adicionar Produto:</h2>
 } @else {
-    <h2>Editar Produto:</h2>
+    <h2>Detalhes do Produto:</h2>
 }
 
-<div class="card flex justify-content-center">
-    <p-fileUpload 
-        #fileUpload
-        mode="basic" 
-        chooseLabel="Subir imagem" 
-        chooseIcon="pi pi-upload"
-        name="demo[]" 
-        accept="image/*" 
-        (onSelect)="onUpload($event)" />
-</div>
-
-<form [formGroup]="form" class="form">
-    <span class="p-float-label form-container">
-        <input pInputText id="name" formControlName="name" />
-        <label for="name">Name</label>
-    </span>
-    <span class="p-float-label form-container">
-        <textarea id="description" rows="5" cols="23" pInputText formControlName="description"></textarea>
-        <label for="description">Descrição</label>
-    </span>
-    <span class="p-float-label form-container">
-        <input pInputText id="price" formControlName="price" />
-        <label for="price">Price</label>
-    </span>
-    <span class="p-float-label form-container">
-        <input pInputText id="stock" formControlName="stock" />
-        <label for="stock">Estoque</label>
-    </span>
-    <div class="form-container">
-        <p-dropdown 
-            [options]="suppliers" 
-            optionLabel="name"
-            optionValue="id"
-            placeholder="Selecione um fornecedor"
-            formControlName="supplierId" />
+<p-panel header="Imagens">
+    <p-galleria 
+        [value]="images"
+        [responsiveOptions]="responsiveOptions"
+        [numVisible]="5">
+        <ng-template pTemplate="item" let-item>
+            <img [src]="item.url" style="width: 500px; object-fit: cover;" />
+        </ng-template>
+        <ng-template pTemplate="thumbnail" let-item>
+            <div class="grid grid-nogutter justify-content-center">
+                <img [src]="item.url" style="width: 50px; height: 50px; object-fit: cover;" />
+            </div>
+        </ng-template>
+    </p-galleria>
+    <br>
+    <div class="card flex justify-content-center">
+        <p-fileUpload 
+            #fileUpload
+            mode="basic" 
+            chooseLabel="Subir imagem" 
+            chooseIcon="pi pi-upload"
+            name="demo[]" 
+            accept="image/*" 
+            (onSelect)="onUpload($event)" />
     </div>
+</p-panel>
+<br>
+<p-panel header="Dados">
+    <form [formGroup]="form" class="form">
+        <span class="p-float-label form-container">
+            <input pInputText id="name" formControlName="name" />
+            <label for="name">Name</label>
+        </span>
+        <span class="p-float-label form-container">
+            <textarea id="description" rows="5" cols="23" pInputText formControlName="description"></textarea>
+            <label for="description">Descrição</label>
+        </span>
+        <span class="p-float-label form-container">
+            <input pInputText id="price" formControlName="price" />
+            <label for="price">Price</label>
+        </span>
+        <span class="p-float-label form-container">
+            <input pInputText id="stock" formControlName="stock" />
+            <label for="stock">Estoque</label>
+        </span>
+        <div class="form-container">
+            <p-dropdown 
+                [options]="suppliers" 
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Selecione um fornecedor"
+                formControlName="supplierId" />
+        </div>
+    
+        <p-button severity="success" (onClick)="saveProduct()" [disabled]="!this.form.valid">
+            Salvar
+        </p-button>
+    </form>
+</p-panel>
 
-    <p-button severity="success" (onClick)="saveProduct()" [disabled]="!this.form.valid">
-        Salvar
-    </p-button>
-</form>

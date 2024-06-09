@@ -1,7 +1,7 @@
 import { NgModule, Provider, importProvidersFrom } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +19,8 @@ import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
+import { PanelModule } from 'primeng/panel';
+import { GalleriaModule } from 'primeng/galleria';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const alertsHttpInterceptor: Provider = {
@@ -47,7 +49,9 @@ const alertsHttpInterceptor: Provider = {
     InputTextModule,
     MenubarModule,
     DropdownModule,
-    FileUploadModule
+    FileUploadModule,
+    PanelModule,
+    GalleriaModule
   ],
   providers: [
     provideClientHydration(),
