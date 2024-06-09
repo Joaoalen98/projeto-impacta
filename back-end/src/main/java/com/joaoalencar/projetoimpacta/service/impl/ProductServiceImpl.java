@@ -13,6 +13,7 @@ import com.joaoalencar.projetoimpacta.domain.model.product.ProductImage;
 import com.joaoalencar.projetoimpacta.repository.ProductImageRepository;
 import com.joaoalencar.projetoimpacta.service.exception.FileUploadException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
@@ -25,8 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private String uploadDirectory = "src/main/resources/static/images/products";
+    @Value("${static-files-path}")
+    private String uploadDirectory;
+
     private ProductRepository productRepository;
+
     private ProductImageRepository productImageRepository;
 
     public ProductServiceImpl(ProductRepository productRepository, ProductImageRepository productImageRepository) {
@@ -100,7 +104,10 @@ public class ProductServiceImpl implements ProductService {
             }
 
             Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            productImageRepository.save(new ProductImage(filePath.toString(), productId));
+
+            productImageRepository.save(new ProductImage(
+                    filePath.toString().replace("\\", "/"),
+                    productId));
 
             return uniqueFileName;
         } catch (Exception e) {
@@ -109,25 +116,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<byte[]> getImages(Integer productId) {
-        var paths = productImageRepository.findByProductId(productId);
-//                .stream()
-//                .map(ProductImage::getPath)
-//                .toList();
-
+    public List<String> getImages(Integer productId) {
         return productImageRepository.findByProductId(productId)
                 .stream()
-                .map(pi -> {
-                    try {
-                        if (Files.exists(Path.of(pi.getPath()))) {
-                            return Files.readAllBytes(Path.of(pi.getPath()));
-                        } else {
-                            return null; // Handle missing images
-                        }
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
+                .map(pi -> pi.getPath())
                 .toList();
     }
 

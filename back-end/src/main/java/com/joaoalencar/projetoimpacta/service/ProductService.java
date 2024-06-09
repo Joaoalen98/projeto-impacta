@@ -8,6 +8,6 @@ import java.util.List;
 public interface ProductService extends CrudService<ProductDTO> {
 
     String uploadImage(MultipartFile imageFile, Integer productId);
-    List<byte[]> getImages(Integer productId);
+    List<String> getImages(Integer productId);
     String deleteImage(String fileName);
 }
