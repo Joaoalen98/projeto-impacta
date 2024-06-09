@@ -94,10 +94,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public String uploadImage(MultipartFile imageFile, Integer productId) {
         try {
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+            String fileName = imageFile.getOriginalFilename()
+                    .replace(" ", "")
+                    .toLowerCase();
 
             Path uploadPath = Path.of(uploadDirectory);
-            Path filePath = uploadPath.resolve(uniqueFileName);
+            Path filePath = uploadPath.resolve(fileName);
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -106,10 +108,10 @@ public class ProductServiceImpl implements ProductService {
             Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             productImageRepository.save(new ProductImage(
-                    filePath.toString().replace("\\", "/"),
+                    fileName,
                     productId));
 
-            return uniqueFileName;
+            return fileName;
         } catch (Exception e) {
             throw new FileUploadException(e.getMessage(), e);
         }
@@ -119,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     public List<String> getImages(Integer productId) {
         return productImageRepository.findByProductId(productId)
                 .stream()
-                .map(pi -> pi.getPath())
+                .map(pi -> "/files/" + pi.getFileName())
                 .toList();
     }
 

@@ -18,8 +18,8 @@ public class ProductImage {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "path")
-    private String path;
+    @Column(name = "file_name")
+    private String fileName;
 
     @Column(name = "product_id")
     private int productId;
@@ -28,8 +28,8 @@ public class ProductImage {
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
 
-    public ProductImage(String path, int productId) {
-        this.path = path;
+    public ProductImage(String fileName, int productId) {
+        this.fileName = fileName;
         this.productId = productId;
     }
 }

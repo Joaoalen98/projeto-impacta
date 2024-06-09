@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupplierDTO } from '../../interfaces/supplier-dto';
-import { UploadEvent } from 'primeng/fileupload';
+import { FileUpload, UploadEvent } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-product-save',
@@ -23,6 +23,9 @@ export class ProductSaveComponent implements OnInit {
   });
 
   suppliers: SupplierDTO[] = [];
+
+  @ViewChild('fileUpload')
+  fileUpload!: FileUpload;
 
   public get name() {
     return this.form.get('name');
@@ -130,6 +133,8 @@ export class ProductSaveComponent implements OnInit {
     const file: File = event.currentFiles[0];
     const form = new FormData();
     form.append("image", file);
+
+    this.fileUpload.files = [];
 
     this.apiService.uploadImage(form, this.id)
       .subscribe({
