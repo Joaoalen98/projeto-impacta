@@ -18,6 +18,7 @@ import { CardModule } from 'primeng/card';
 import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
+import { FileUploadModule } from 'primeng/fileupload';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const alertsHttpInterceptor: Provider = {
@@ -45,7 +46,8 @@ const alertsHttpInterceptor: Provider = {
     CardModule,
     InputTextModule,
     MenubarModule,
-    DropdownModule
+    DropdownModule,
+    FileUploadModule
   ],
   providers: [
     provideClientHydration(),

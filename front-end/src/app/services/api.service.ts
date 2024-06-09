@@ -52,4 +52,16 @@ export class ApiService {
   deleteSupplier(id: number) {
     return this.http.delete<any>(this.url + `api/v1/suppliers/${id}`);
   }
+
+  uploadImage(form: FormData, productId: number) {
+    return this.http.post<any>(this.url + `api/v1/products/images/${productId}`, form)
+  }
+
+  getProductImages(productId: number) {
+    return this.http.get<string[]>(this.url + `api/v1/products/images/${productId}`)
+  }
+
+  deleteProductImage(fileName: string) {
+    return this.http.delete<any>(this.url + `api/v1/products/images/${fileName}`)
+  }
 }

@@ -15,6 +15,9 @@ import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
 import jakarta.validation.Valid;
 
 import com.joaoalencar.projetoimpacta.service.ProductService;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -54,5 +57,28 @@ public class ProductsController {
     public ResponseEntity<?> delete(@PathVariable int id) {
         var product = productService.delete(id);
         return ResponseEntity.ok().body(product);
+    }
+
+    @PostMapping("/images/{productId}")
+    public ResponseEntity<?> uploadImage(@Valid @RequestBody MultipartFile image, @PathVariable Integer productId) {
+        productService.uploadImage(image, productId);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
+    }
+
+    @GetMapping("/images/{productId}")
+    public ResponseEntity<?> getImages(@PathVariable Integer productId) {
+        return ResponseEntity.ok(productService.getImages(productId));
+    }
+
+    @DeleteMapping("/images/{fileName}")
+    public ResponseEntity<?> deleteImage(@PathVariable String fileName) {
+        productService.deleteImage(fileName);
+
+        return ResponseEntity
+                .ok()
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.joaoalencar.projetoimpacta.controller.handler;
 
+import com.joaoalencar.projetoimpacta.service.exception.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +21,11 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handle(BadRequestException ex) {
+        return new ResponseEntity<>(new ErrorMessage(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<?> handle(FileUploadException ex) {
         return new ResponseEntity<>(new ErrorMessage(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

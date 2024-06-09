@@ -4,6 +4,7 @@ import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupplierDTO } from '../../interfaces/supplier-dto';
+import { UploadEvent } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-product-save',
@@ -105,7 +106,7 @@ export class ProductSaveComponent implements OnInit {
             this.savedSuccessfully();
           },
           error: (res) => {
-        
+
           }
         });
     } else {
@@ -115,7 +116,7 @@ export class ProductSaveComponent implements OnInit {
             this.savedSuccessfully();
           },
           error: (res) => {
-        
+
           }
         });
     }
@@ -123,5 +124,21 @@ export class ProductSaveComponent implements OnInit {
 
   savedSuccessfully() {
     this.router.navigate(['/produtos']);
+  }
+
+  onUpload(event: any) {
+    const file: File = event.currentFiles[0];
+    const form = new FormData();
+    form.append("image", file);
+
+    this.apiService.uploadImage(form, this.id)
+      .subscribe({
+        next: (res) => {
+
+        }, 
+        error: (err) => {
+          console.log(err);
+        }
+      });
   }
 }
