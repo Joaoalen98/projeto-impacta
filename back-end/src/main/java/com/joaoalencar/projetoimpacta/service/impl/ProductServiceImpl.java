@@ -126,16 +126,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String deleteImage(String fileName) {
+    public String deleteImage(Integer productImageId) {
         try {
-            Path imagePath = Path.of(uploadDirectory, fileName);
+            var productImage = productImageRepository.findById(productImageId);
 
-            if (Files.exists(imagePath)) {
-                Files.delete(imagePath);
+            if (productImage.isPresent()) {
+                productImageRepository.delete(productImage.get());
+
+                Path imagePath = Path.of(uploadDirectory, productImage.get().getFileName());
+
+                if (Files.exists(imagePath)) {
+                    Files.delete(imagePath);
+                }
+
                 return "Success";
-            } else {
-                return "Failed";
             }
+
+            return "Error";
         } catch (Exception e) {
             throw new FileUploadException(e.getMessage(), e);
         }

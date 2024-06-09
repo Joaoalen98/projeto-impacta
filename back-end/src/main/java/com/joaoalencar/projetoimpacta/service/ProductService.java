@@ -9,5 +9,5 @@ public interface ProductService extends CrudService<ProductDTO> {
 
     String uploadImage(MultipartFile imageFile, Integer productId);
     List<String> getImages(Integer productId);
-    String deleteImage(String fileName);
+    String deleteImage(Integer productImageId);
 }
