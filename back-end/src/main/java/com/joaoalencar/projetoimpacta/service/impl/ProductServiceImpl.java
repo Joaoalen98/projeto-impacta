@@ -4,16 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import com.joaoalencar.projetoimpacta.domain.model.product.ProductImage;
 import com.joaoalencar.projetoimpacta.repository.ProductImageRepository;
 import com.joaoalencar.projetoimpacta.service.dto.ProductImageDTO;
 import com.joaoalencar.projetoimpacta.service.exception.BadRequestException;
 import com.joaoalencar.projetoimpacta.service.exception.FileUploadException;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -94,29 +92,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String uploadImage(MultipartFile imageFile, Integer productId) {
-        try {
-            String fileName = imageFile.getOriginalFilename()
-                    .replace(" ", "_")
-                    .toLowerCase();
+    @Transactional
+    public void uploadImage(List<MultipartFile> images, Integer productId) {
+        images.forEach(imageFile -> {
+            try {
+                String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename()
+                        .replace(" ", "_")
+                        .toLowerCase();
 
-            Path uploadPath = Path.of(uploadDirectory);
-            Path filePath = uploadPath.resolve(fileName);
+                Path uploadPath = Path.of(uploadDirectory);
+                Path filePath = uploadPath.resolve(fileName);
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                productImageRepository.save(new ProductImage(
+                        fileName,
+                        productId));
+
+            } catch (Exception e) {
+                throw new FileUploadException(e.getMessage(), e);
             }
-
-            Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            productImageRepository.save(new ProductImage(
-                    fileName,
-                    productId));
-
-            return fileName;
-        } catch (Exception e) {
-            throw new FileUploadException(e.getMessage(), e);
-        }
+        });
     }
 
     @Override

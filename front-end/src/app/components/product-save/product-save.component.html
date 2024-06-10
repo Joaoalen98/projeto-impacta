@@ -1,66 +1,103 @@
-@if (this.id === 0) {
-    <h2>Adicionar Produto:</h2>
-} @else {
-    <h2>Detalhes do Produto:</h2>
-}
-
-<p-panel header="Imagens">
-    <p-galleria 
-        [value]="images"
-        [responsiveOptions]="responsiveOptions"
-        [numVisible]="5">
-        <ng-template pTemplate="item" let-item>
-            <img [src]="item.url" style="width: 500px; object-fit: cover;" />
-        </ng-template>
-        <ng-template pTemplate="thumbnail" let-item>
-            <div class="grid grid-nogutter justify-content-center">
-                <img [src]="item.url" style="width: 50px; height: 50px; object-fit: cover;" />
-            </div>
-        </ng-template>
-    </p-galleria>
-    <br>
-    <div class="card flex justify-content-center">
-        <p-fileUpload 
-            #fileUpload
-            mode="basic" 
-            chooseLabel="Subir imagem" 
-            chooseIcon="pi pi-upload"
-            name="demo[]" 
-            accept="image/*" 
-            (onSelect)="onUpload($event)" />
-    </div>
-</p-panel>
 <br>
-<p-panel header="Dados">
-    <form [formGroup]="form" class="form">
-        <span class="p-float-label form-container">
-            <input pInputText id="name" formControlName="name" />
-            <label for="name">Name</label>
-        </span>
-        <span class="p-float-label form-container">
-            <textarea id="description" rows="5" cols="23" pInputText formControlName="description"></textarea>
-            <label for="description">Descrição</label>
-        </span>
-        <span class="p-float-label form-container">
-            <input pInputText id="price" formControlName="price" />
-            <label for="price">Price</label>
-        </span>
-        <span class="p-float-label form-container">
-            <input pInputText id="stock" formControlName="stock" />
-            <label for="stock">Estoque</label>
-        </span>
-        <div class="form-container">
-            <p-dropdown 
-                [options]="suppliers" 
-                optionLabel="name"
-                optionValue="id"
-                placeholder="Selecione um fornecedor"
-                formControlName="supplierId" />
-        </div>
+<p-card header="Produto">
+    <p-stepper #stepper>
+        <p-stepperPanel header="Dados do produto">
+            <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
+                <form [formGroup]="form" class="form">
+                    <span class="p-float-label form-container">
+                        <input pInputText id="name" formControlName="name" />
+                        <label for="name">Name</label>
+                    </span>
+                    <span class="p-float-label form-container">
+                        <textarea id="description" rows="5" cols="23" pInputText formControlName="description"></textarea>
+                        <label for="description">Descrição</label>
+                    </span>
+                    <span class="p-float-label form-container">
+                        <input pInputText id="price" formControlName="price" />
+                        <label for="price">Price</label>
+                    </span>
+                    <span class="p-float-label form-container">
+                        <input pInputText id="stock" formControlName="stock" />
+                        <label for="stock">Estoque</label>
+                    </span>
+                    <div class="form-container">
+                        <p-dropdown [options]="suppliers" optionLabel="name" optionValue="id" placeholder="Selecione um fornecedor"
+                            formControlName="supplierId" />
+                    </div>
+            
+                    <p-button severity="success" (onClick)="saveProduct(); nextCallback.emit()" [disabled]="!this.form.valid">
+                        Salvar
+                    </p-button>
+                </form>
+            </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Imagens">
+            <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
+                <p-fileUpload 
+                    #fileUpload 
+                    mode="basic" 
+                    [multiple]="true" 
+                    chooseLabel="Nova imagem" 
+                    chooseIcon="pi pi-upload"
+                    accept="image/*" 
+                    [maxFileSize]="9000000" 
+                    (onSelect)="onUpload($event)" />
     
-        <p-button severity="success" (onClick)="saveProduct()" [disabled]="!this.form.valid">
-            Salvar
-        </p-button>
-    </form>
-</p-panel>
-
+                @if (imagesToUpload.length > 0) {
+                <br>
+                <p-table [value]="imagesToUpload" [tableStyle]="{ 'min-width': '50rem' }">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Tamanho</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-image>
+                        <tr>
+                            <td>
+                                <img [src]="getFileUrl(image)" [alt]="image.name" width="100px" height="100px"
+                                    style="object-fit: cover;">
+                            </td>
+                            <td>{{ image.name }}</td>
+                            <td>{{ image.size / 1000000 }} MB</td>
+                            <td>
+                                <p-button severity="danger" (onClick)="removeFileToUpload(image.lastModified)">
+                                    Deletar
+                                </p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <p-button severity="success" (onClick)="saveProductImages(); nextCallback.emit()" [disabled]="!this.form.valid">
+                    Salvar Imagens
+                </p-button>
+                }
+                <br>
+                <h3>Imagens salvas:</h3>
+                <p-table [value]="images" [tableStyle]="{ 'min-width': '50rem' }">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-image>
+                        <tr>
+                            <td>
+                                <img [src]="image.url" width="100px" height="100px"
+                                    style="object-fit: cover;">
+                            </td>
+                            <td>
+                                <p-button severity="danger" (onClick)="deleteProductImage(image.id)">
+                                    Deletar
+                                </p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </ng-template>
+        </p-stepperPanel>
+    </p-stepper>
+</p-card>

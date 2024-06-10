@@ -54,7 +54,7 @@ export class ApiService {
     return this.http.delete<any>(this.url + `api/v1/suppliers/${id}`);
   }
 
-  uploadImage(form: FormData, productId: number) {
+  uploadImages(form: FormData, productId: number) {
     return this.http.post<any>(this.url + `api/v1/products/images/${productId}`, form)
   }
 
@@ -62,7 +62,7 @@ export class ApiService {
     return this.http.get<ProductImageDTO[]>(this.url + `api/v1/products/images/${productId}`)
   }
 
-  deleteProductImage(fileName: string) {
-    return this.http.delete<any>(this.url + `api/v1/products/images/${fileName}`)
+  deleteProductImage(productImageId: number) {
+    return this.http.delete<any>(this.url + `api/v1/products/images/${productImageId}`);
   }
 }

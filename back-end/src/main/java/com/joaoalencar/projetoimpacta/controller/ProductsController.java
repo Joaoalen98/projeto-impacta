@@ -18,6 +18,8 @@ import com.joaoalencar.projetoimpacta.service.ProductService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -60,8 +62,8 @@ public class ProductsController {
     }
 
     @PostMapping("/images/{productId}")
-    public ResponseEntity<?> uploadImage(@Valid @RequestBody MultipartFile image, @PathVariable Integer productId) {
-        productService.uploadImage(image, productId);
+    public ResponseEntity<?> uploadImages(@Valid @RequestBody List<MultipartFile> images, @PathVariable Integer productId) {
+        productService.uploadImage(images, productId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

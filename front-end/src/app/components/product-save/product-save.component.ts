@@ -1,11 +1,12 @@
-import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupplierDTO } from '../../interfaces/supplier-dto';
-import { FileUpload, UploadEvent } from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload, FileUploadEvent } from 'primeng/fileupload';
 import { ProductImageDTO } from '../../interfaces/product-image-dto';
+import { Stepper } from 'primeng/stepper';
 
 @Component({
   selector: 'app-product-save',
@@ -23,27 +24,15 @@ export class ProductSaveComponent implements OnInit {
     supplierId: [''],
   });
 
-  images: any[] | undefined;
-
-  responsiveOptions = [
-    {
-      breakpoint: '1024px',
-      numVisible: 5
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 3
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 1
-    }
-  ];
-
+  images: ProductImageDTO[] = [];
   suppliers: SupplierDTO[] = [];
+  imagesToUpload: File[] = [];
 
   @ViewChild('fileUpload')
   fileUpload!: FileUpload;
+
+  @ViewChild('stepper')
+  stepper!: Stepper;
 
   public get name() {
     return this.form.get('name');
@@ -100,6 +89,7 @@ export class ProductSaveComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.images = res;
+          console.log(res);
         },
         error: (res) => {
           console.log(res);
@@ -137,7 +127,7 @@ export class ProductSaveComponent implements OnInit {
       this.apiService.createProduct(product)
         .subscribe({
           next: (res) => {
-            this.savedSuccessfully();
+
           },
           error: (res) => {
 
@@ -147,7 +137,7 @@ export class ProductSaveComponent implements OnInit {
       this.apiService.updateProduct(product, this.id)
         .subscribe({
           next: (res) => {
-            this.savedSuccessfully();
+
           },
           error: (res) => {
 
@@ -160,20 +150,48 @@ export class ProductSaveComponent implements OnInit {
     this.router.navigate(['/produtos']);
   }
 
-  onUpload(event: any) {
-    const file: File = event.currentFiles[0];
-    const form = new FormData();
-    form.append("image", file);
-
+  onUpload(event: FileSelectEvent) {
+    this.imagesToUpload.push(...event.files);
     this.fileUpload.files = [];
+    console.log(this.imagesToUpload);
 
-    this.apiService.uploadImage(form, this.id)
+
+  }
+
+  getFileUrl(file: File): string {
+    return window.URL.createObjectURL(file);
+  }
+
+  removeFileToUpload(lastModified: number) {
+    this.imagesToUpload = this.imagesToUpload.filter(i => i.lastModified !== lastModified);
+  }
+
+  saveProductImages() {
+    const form = new FormData();
+    this.imagesToUpload.forEach(im => {
+      form.append('images', im);
+    });
+
+    this.apiService.uploadImages(form, this.id)
       .subscribe({
         next: (res) => {
+          this.imagesToUpload = [];
           this.findAllProductImages();
         },
         error: (err) => {
           console.log(err);
+        }
+      });
+  }
+
+  deleteProductImage(productImageId: number) {
+    this.apiService.deleteProductImage(productImageId)
+      .subscribe({
+        next: (res) => {
+          this.images = this.images.filter(i => i.id !== productImageId);
+        },
+        error: (res) => {
+
         }
       });
   }
