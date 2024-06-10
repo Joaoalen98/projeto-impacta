@@ -127,7 +127,7 @@ export class ProductSaveComponent implements OnInit {
       this.apiService.createProduct(product)
         .subscribe({
           next: (res) => {
-
+            this.id = res.id;
           },
           error: (res) => {
 
@@ -167,6 +167,11 @@ export class ProductSaveComponent implements OnInit {
   }
 
   saveProductImages() {
+    if (this.id === 0) {
+      alert('Salve o dados do produto antes de fazer o upload das imagens');
+      return;
+    }
+
     const form = new FormData();
     this.imagesToUpload.forEach(im => {
       form.append('images', im);
@@ -175,8 +180,8 @@ export class ProductSaveComponent implements OnInit {
     this.apiService.uploadImages(form, this.id)
       .subscribe({
         next: (res) => {
-          this.imagesToUpload = [];
-          this.findAllProductImages();
+            this.imagesToUpload = [];
+            this.findAllProductImages();
         },
         error: (err) => {
           console.log(err);

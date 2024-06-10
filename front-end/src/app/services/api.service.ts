@@ -22,7 +22,7 @@ export class ApiService {
   }
 
   createProduct(product: ProductDto) {
-    return this.http.post<any>(this.url + 'api/v1/products', product);
+    return this.http.post<ProductDto>(this.url + 'api/v1/products', product);
   }
 
   updateProduct(product: ProductDto, id: number) {

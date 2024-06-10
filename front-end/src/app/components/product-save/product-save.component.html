@@ -70,7 +70,7 @@
                         </tr>
                     </ng-template>
                 </p-table>
-                <p-button severity="success" (onClick)="saveProductImages(); nextCallback.emit()" [disabled]="!this.form.valid">
+                <p-button severity="success" (onClick)="saveProductImages();">
                     Salvar Imagens
                 </p-button>
                 }
@@ -86,8 +86,10 @@
                     <ng-template pTemplate="body" let-image>
                         <tr>
                             <td>
-                                <img [src]="image.url" width="100px" height="100px"
-                                    style="object-fit: cover;">
+                                <a [href]="image.url" target="_blank">
+                                    <img [src]="image.url" width="100px" height="100px"
+                                        style="object-fit: cover;">
+                                </a>
                             </td>
                             <td>
                                 <p-button severity="danger" (onClick)="deleteProductImage(image.id)">
