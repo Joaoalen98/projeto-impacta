@@ -8,7 +8,6 @@ import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { ProductImageDTO } from '../../interfaces/product-image-dto';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { TabView } from 'primeng/tabview';
-import { setTimeout } from 'node:timers/promises';
 import { environment } from '../../../environments/environment.development';
 
 @Component({
@@ -93,6 +92,7 @@ export class ProductSaveComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.images = res;
+          console.log(res);
         },
         error: (res) => {
         }
