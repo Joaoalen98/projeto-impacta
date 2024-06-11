@@ -83,7 +83,7 @@ export class ProductSaveComponent implements OnInit {
           }
         },
         error: (res) => {
-          
+
         }
       });
   }
@@ -176,10 +176,11 @@ export class ProductSaveComponent implements OnInit {
       .subscribe({
         next: (res: HttpEvent<Object>) => {
           if (res.type === HttpEventType.Response) {
-            this.imagesToUpload = [];
-            this.findAllProductImages();
+            alert('Imagens enviadas, processando...');
           } else if (res.type === HttpEventType.UploadProgress) {
             (Math.round(res.loaded * 100) / res.total!);
+          } else if (res.type === HttpEventType.Sent) {
+            this.imagesToUpload = [];
           }
         },
         error: (err) => {

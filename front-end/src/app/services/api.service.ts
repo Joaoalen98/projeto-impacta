@@ -58,6 +58,7 @@ export class ApiService {
   uploadImages(form: FormData, productId: number) {
     return this.http.post<any>(this.url + `api/v1/products/images/${productId}`, form, {
       observe: 'events',
+      reportProgress: true
     });
   }
 
