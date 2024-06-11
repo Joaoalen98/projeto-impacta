@@ -47,14 +47,14 @@
         <br>
         <h3>Imagens salvas:</h3>
         <div class="images-container">
-            @for (image of images; track $index) {
+            @for (image of product?.images; track $index) {
                 <div class="images-container__img-container">
                     <p-button severity="danger" (onClick)="deleteProductImage(image.id)" class="images-container__button" size="small">
                         <i class="pi pi-times"></i>
                     </p-button>
-                    <a [href]="baseImageUrl + image.url" target="_blank">
+                    <a [href]="baseImageUrl + image.fileName" target="_blank">
                         <img 
-                            [src]="baseImageUrl + image.url" 
+                            [src]="baseImageUrl + image.fileName" 
                             alt="" 
                             width="200" 
                             height="200" 

@@ -1,14 +1,10 @@
 package com.joaoalencar.projetoimpacta.controller;
 
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
 
@@ -17,8 +13,6 @@ import jakarta.validation.Valid;
 import com.joaoalencar.projetoimpacta.service.ProductService;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -70,11 +64,6 @@ public class ProductsController {
                 .build();
     }
 
-    @GetMapping("/images/{productId}")
-    public ResponseEntity<?> getImages(@PathVariable Integer productId) {
-        return ResponseEntity.ok(productService.getImages(productId));
-    }
-
     @DeleteMapping("/images/{productImageId}")
     public ResponseEntity<?> deleteImage(@PathVariable Integer productImageId) {
         productService.deleteImage(productImageId);
@@ -82,5 +71,16 @@ public class ProductsController {
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    @GetMapping("/images/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+        Resource file = productService.loadAsResource(filename);
+        if (file == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(file);
     }
 }

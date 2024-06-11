@@ -1,4 +1,4 @@
 export interface ProductImageDTO {
     id: number;
-    url: string;
+    fileName: string;
 }

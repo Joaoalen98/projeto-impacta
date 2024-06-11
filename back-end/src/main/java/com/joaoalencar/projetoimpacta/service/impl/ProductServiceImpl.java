@@ -14,6 +14,8 @@ import com.joaoalencar.projetoimpacta.service.exception.FileUploadException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import com.joaoalencar.projetoimpacta.service.dto.ProductDTO;
@@ -125,6 +127,24 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(pi -> new ProductImageDTO(pi.getId(), "api/files/" + pi.getFileName()))
                 .toList();
+    }
+
+    @Override
+    public Resource loadAsResource(String fileName) {
+        try {
+            Path file = Path.of(uploadDirectory, fileName);
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            }
+            else {
+                throw new BadRequestException("Arquivo não encontrado, ou não pode ser lido: " + fileName);
+            }
+        }
+        catch (Exception e) {
+            throw new BadRequestException("Ocorreu um erro ao obter o arquivo: " + fileName, e);
+        }
     }
 
     @Override

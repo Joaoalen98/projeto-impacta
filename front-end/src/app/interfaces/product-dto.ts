@@ -1,3 +1,5 @@
+import { ProductImageDTO } from "./product-image-dto";
+
 export interface ProductDto {
     id: number;
     name: string;
@@ -5,4 +7,5 @@ export interface ProductDto {
     price: number;
     stock: number;
     supplierId?: number;
+    images?: ProductImageDTO[];
 }

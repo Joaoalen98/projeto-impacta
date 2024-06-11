@@ -12,5 +12,5 @@ import lombok.Setter;
 public class ProductImageDTO {
 
     private int id;
-    private String url;
+    private String fileName;
 }

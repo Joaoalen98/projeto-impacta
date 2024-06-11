@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupplierDTO } from '../../interfaces/supplier-dto';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
-import { ProductImageDTO } from '../../interfaces/product-image-dto';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { TabView } from 'primeng/tabview';
 import { environment } from '../../../environments/environment.development';
@@ -19,17 +18,17 @@ export class ProductSaveComponent implements OnInit {
 
   id: number = 0;
   form: FormGroup = new FormBuilder().group({
-    name: ['', Validators.required],
-    description: ['', Validators.required],
-    price: ['', Validators.required],
-    stock: ['', Validators.required],
-    supplierId: [''],
+    name: [this.product?.name, Validators.required],
+    description: [this.product?.description, Validators.required],
+    price: [this.product?.price, Validators.required],
+    stock: [this.product?.stock, Validators.required],
+    supplierId: [this.product?.supplierId],
   });
 
-  images: ProductImageDTO[] = [];
+  product?: ProductDto;
   suppliers: SupplierDTO[] = [];
   imagesToUpload: File[] = [];
-  baseImageUrl: string = environment.API_URL;
+  baseImageUrl: string = environment.API_URL + "api/v1/products/images/";
 
   @ViewChild('fileUpload')
   fileUpload!: FileUpload;
@@ -60,14 +59,12 @@ export class ProductSaveComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(p => {
       this.id = parseInt(p['id']);
       this.findAllSuppliers();
-      this.findAllProductImages();
     });
   }
 
@@ -87,22 +84,11 @@ export class ProductSaveComponent implements OnInit {
       });
   }
 
-  findAllProductImages() {
-    this.apiService.getProductImages(this.id)
-      .subscribe({
-        next: (res) => {
-          this.images = res;
-          console.log(res);
-        },
-        error: (res) => {
-        }
-      });
-  }
-
   findProductById(id: number) {
     this.apiService.findProductById(id)
       .subscribe({
         next: (res) => {
+          this.product = res;
           this.name?.setValue(res.name);
           this.description?.setValue(res.description);
           this.price?.setValue(res.price);
@@ -177,6 +163,7 @@ export class ProductSaveComponent implements OnInit {
         next: (res: HttpEvent<Object>) => {
           if (res.type === HttpEventType.Response) {
             alert('Imagens enviadas, processando...');
+            this.findProductById(this.id);
           } else if (res.type === HttpEventType.UploadProgress) {
             (Math.round(res.loaded * 100) / res.total!);
           } else if (res.type === HttpEventType.Sent) {
@@ -193,7 +180,7 @@ export class ProductSaveComponent implements OnInit {
     this.apiService.deleteProductImage(productImageId)
       .subscribe({
         next: (res) => {
-          this.images = this.images.filter(i => i.id !== productImageId);
+          this.product!.images = this.product?.images?.filter(i => i.id !== productImageId);
         },
         error: (res) => {
 

@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductDTO {
@@ -29,4 +31,6 @@ public class ProductDTO {
     private int stock;
 
     private Integer supplierId;
+
+    private List<ProductImageDTO> images;
 }
