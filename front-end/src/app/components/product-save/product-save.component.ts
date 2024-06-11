@@ -9,6 +9,7 @@ import { ProductImageDTO } from '../../interfaces/product-image-dto';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { TabView } from 'primeng/tabview';
 import { setTimeout } from 'node:timers/promises';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-product-save',
@@ -29,6 +30,7 @@ export class ProductSaveComponent implements OnInit {
   images: ProductImageDTO[] = [];
   suppliers: SupplierDTO[] = [];
   imagesToUpload: File[] = [];
+  baseImageUrl: string = environment.API_URL;
 
   @ViewChild('fileUpload')
   fileUpload!: FileUpload;

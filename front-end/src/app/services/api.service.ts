@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { ProductDto } from '../interfaces/product-dto';
 import { SupplierDTO } from '../interfaces/supplier-dto';
 import { ProductImageDTO } from '../interfaces/product-image-dto';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private url: string = 'http://localhost:8080/';
+  private url: string = environment.API_URL;
 
   constructor(private http: HttpClient) { }
 

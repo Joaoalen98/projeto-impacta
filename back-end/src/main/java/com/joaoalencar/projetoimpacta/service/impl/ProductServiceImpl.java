@@ -123,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductImageDTO> getImages(Integer productId) {
         return productImageRepository.findByProductId(productId)
                 .stream()
-                .map(pi -> new ProductImageDTO(pi.getId(), "http://localhost:8080/files/" + pi.getFileName()))
+                .map(pi -> new ProductImageDTO(pi.getId(), "api/files/" + pi.getFileName()))
                 .toList();
     }
 

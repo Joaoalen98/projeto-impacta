@@ -52,8 +52,8 @@
                     <p-button severity="danger" (onClick)="deleteProductImage(image.id)" class="images-container__button" size="small">
                         <i class="pi pi-times"></i>
                     </p-button>
-                    <a [href]="image.url" target="_blank">
-                        <img [src]="image.url" alt="" width="200" height="200" class="images-container__img" />
+                    <a [href]="baseImageUrl + image.url" target="_blank">
+                        <img [src]="baseImageUrl + image.url" alt="" width="200" height="200" class="images-container__img" />
                     </a>
                 </div>
             }
