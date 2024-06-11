@@ -34,8 +34,6 @@ export class SupplierSaveComponent {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(p => {
-      console.log(p);
-
       if (p['id'] != '0') {
         this.id = p['id'];
         this.findSupplierById(p['id']);

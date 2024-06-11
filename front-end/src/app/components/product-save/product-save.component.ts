@@ -81,7 +81,7 @@ export class ProductSaveComponent implements OnInit {
           }
         },
         error: (res) => {
-          console.log(res);
+          
         }
       });
   }
@@ -91,10 +91,8 @@ export class ProductSaveComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.images = res;
-          console.log(res);
         },
         error: (res) => {
-          console.log(res);
         }
       });
   }
@@ -179,11 +177,11 @@ export class ProductSaveComponent implements OnInit {
             this.imagesToUpload = [];
             this.findAllProductImages();
           } else if (res.type === HttpEventType.UploadProgress) {
-            console.log(Math.round(res.loaded * 100) / res.total!);
+            (Math.round(res.loaded * 100) / res.total!);
           }
         },
         error: (err) => {
-          console.log(err);
+          (err);
         }
       });
   }

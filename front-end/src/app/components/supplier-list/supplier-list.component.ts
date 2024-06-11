@@ -28,7 +28,6 @@ export class SupplierListComponent implements OnInit {
           this.suppliers = res;
         },
         error: (res) => {
-          console.log(res);
         }
       });
   }
