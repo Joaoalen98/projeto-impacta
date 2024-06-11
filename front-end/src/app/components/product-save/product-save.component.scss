@@ -1,0 +1,25 @@
+:host {
+    .images-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+
+        .images-container__img-container {
+            position: relative;
+            top: 5px;
+            right: 5px;
+        }
+
+        .images-container__button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 999;
+        }
+
+        .images-container__img {
+            margin-left: 5px;
+        }
+    }
+}

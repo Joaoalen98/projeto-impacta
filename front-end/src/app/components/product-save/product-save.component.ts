@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ProductDto } from '../../interfaces/product-dto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupplierDTO } from '../../interfaces/supplier-dto';
-import { FileSelectEvent, FileUpload, FileUploadEvent } from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { ProductImageDTO } from '../../interfaces/product-image-dto';
-import { Stepper } from 'primeng/stepper';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { TabView } from 'primeng/tabview';
+import { setTimeout } from 'node:timers/promises';
 
 @Component({
   selector: 'app-product-save',
@@ -31,8 +33,8 @@ export class ProductSaveComponent implements OnInit {
   @ViewChild('fileUpload')
   fileUpload!: FileUpload;
 
-  @ViewChild('stepper')
-  stepper!: Stepper;
+  @ViewChild('tabView')
+  tabView!: TabView;
 
   public get name() {
     return this.form.get('name');
@@ -146,16 +148,9 @@ export class ProductSaveComponent implements OnInit {
     }
   }
 
-  savedSuccessfully() {
-    this.router.navigate(['/produtos']);
-  }
-
   onUpload(event: FileSelectEvent) {
     this.imagesToUpload.push(...event.files);
     this.fileUpload.files = [];
-    console.log(this.imagesToUpload);
-
-
   }
 
   getFileUrl(file: File): string {
@@ -179,9 +174,13 @@ export class ProductSaveComponent implements OnInit {
 
     this.apiService.uploadImages(form, this.id)
       .subscribe({
-        next: (res) => {
+        next: (res: HttpEvent<Object>) => {
+          if (res.type === HttpEventType.Response) {
             this.imagesToUpload = [];
             this.findAllProductImages();
+          } else if (res.type === HttpEventType.UploadProgress) {
+            console.log(Math.round(res.loaded * 100) / res.total!);
+          }
         },
         error: (err) => {
           console.log(err);

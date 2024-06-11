@@ -22,6 +22,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { PanelModule } from 'primeng/panel';
 import { GalleriaModule } from 'primeng/galleria';
 import { StepperModule } from 'primeng/stepper';
+import { TabViewModule } from 'primeng/tabview';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -54,7 +55,8 @@ const alertsHttpInterceptor: Provider = {
     FileUploadModule,
     PanelModule,
     GalleriaModule,
-    StepperModule
+    StepperModule,
+    TabViewModule
   ],
   providers: [
     provideClientHydration(),
