@@ -30,6 +30,7 @@ export class ProductSaveComponent implements OnInit {
   imagesToUpload: File[] = [];
   baseImageUrl: string = environment.API_URL + "api/v1/products/images/";
   imageUploadProgress = 0;
+  tabViewActiveIndex = 0;
 
   @ViewChild('fileUpload')
   fileUpload!: FileUpload;
@@ -117,6 +118,7 @@ export class ProductSaveComponent implements OnInit {
         .subscribe({
           next: (res) => {
             this.id = res.id;
+            this.tabViewActiveIndex = 1;
           },
           error: (res) => {
 
@@ -126,7 +128,7 @@ export class ProductSaveComponent implements OnInit {
       this.apiService.updateProduct(product, this.id)
         .subscribe({
           next: (res) => {
-
+            this.tabViewActiveIndex = 1;
           },
           error: (res) => {
 
