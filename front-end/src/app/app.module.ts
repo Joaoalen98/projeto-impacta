@@ -23,6 +23,7 @@ import { PanelModule } from 'primeng/panel';
 import { GalleriaModule } from 'primeng/galleria';
 import { StepperModule } from 'primeng/stepper';
 import { TabViewModule } from 'primeng/tabview';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -56,7 +57,8 @@ const alertsHttpInterceptor: Provider = {
     PanelModule,
     GalleriaModule,
     StepperModule,
-    TabViewModule
+    TabViewModule,
+    ProgressBarModule
   ],
   providers: [
     provideClientHydration(),

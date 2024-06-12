@@ -30,7 +30,7 @@
     </p-tabPanel>
     <p-tabPanel header="Upload de imagens">
         <p-fileUpload #fileUpload mode="basic" [multiple]="true" chooseLabel="Nova imagem" chooseIcon="pi pi-upload"
-            accept="image/*" [maxFileSize]="9000000" (onSelect)="onUpload($event)" />
+            accept="image/*" [maxFileSize]="9000000" (onSelect)="onSelectFiles($event)" />
 
         @if (imagesToUpload.length > 0) {
         <br>
@@ -40,6 +40,7 @@
                 <img [src]="getFileUrl(image)" alt="" width="100" height="100" />
             }
         </div>
+        <p-progressBar [style]="{ height: '6px' }" [value]="imageUploadProgress" [style.display]="imageUploadProgress === 0 ? 'none' : 'block'" />
         <p-button severity="success" (onClick)="saveProductImages();">
             Salvar Imagens
         </p-button>

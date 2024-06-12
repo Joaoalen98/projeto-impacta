@@ -29,6 +29,7 @@ export class ProductSaveComponent implements OnInit {
   suppliers: SupplierDTO[] = [];
   imagesToUpload: File[] = [];
   baseImageUrl: string = environment.API_URL + "api/v1/products/images/";
+  imageUploadProgress = 0;
 
   @ViewChild('fileUpload')
   fileUpload!: FileUpload;
@@ -134,7 +135,7 @@ export class ProductSaveComponent implements OnInit {
     }
   }
 
-  onUpload(event: FileSelectEvent) {
+  onSelectFiles(event: FileSelectEvent) {
     this.imagesToUpload.push(...event.files);
     this.fileUpload.files = [];
   }
@@ -162,16 +163,17 @@ export class ProductSaveComponent implements OnInit {
       .subscribe({
         next: (res: HttpEvent<Object>) => {
           if (res.type === HttpEventType.Response) {
-            alert('Imagens enviadas, processando...');
+            this.imagesToUpload = [];
+            this.imageUploadProgress = 0;
             this.findProductById(this.id);
           } else if (res.type === HttpEventType.UploadProgress) {
-            (Math.round(res.loaded * 100) / res.total!);
+            this.imageUploadProgress = Math.round((res.loaded * 100) / res.total!);
           } else if (res.type === HttpEventType.Sent) {
-            this.imagesToUpload = [];
+
           }
         },
         error: (err) => {
-          (err);
+
         }
       });
   }
