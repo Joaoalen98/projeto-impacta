@@ -1,5 +1,6 @@
 package com.joaoalencar.projetoimpacta.service.impl;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -85,7 +86,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Optional<ProductDTO> delete(int id) {
+        productImageRepository.findByProductId(id)
+                .forEach(pi -> {
+                    try {
+                        deleteImage(pi);
+                    } catch (IOException e) {
+                        throw new BadRequestException("Erro ao deletar imagens do produto - " + e.getMessage(), e);
+                    }
+                });
+
         var product = getEntityById(id);
         productRepository.delete(product);
         return Optional.of(new ModelMapper().map(product, ProductDTO.class));
@@ -127,12 +138,10 @@ public class ProductServiceImpl implements ProductService {
 
             if (resource.exists() || resource.isReadable()) {
                 return resource;
-            }
-            else {
+            } else {
                 throw new BadRequestException("Arquivo não encontrado, ou não pode ser lido: " + fileName);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new BadRequestException("Ocorreu um erro ao obter o arquivo: " + fileName, e);
         }
     }
@@ -142,15 +151,18 @@ public class ProductServiceImpl implements ProductService {
         try {
             var productImage = productImageRepository.findById(productImageId)
                     .orElseThrow(() -> new BadRequestException("Arquivo não encontrado"));
-
-            productImageRepository.delete(productImage);
-
-            Path imagePath = Path.of(uploadDirectory, productImage.getFileName());
-            if (Files.exists(imagePath)) {
-                Files.delete(imagePath);
-            }
+            deleteImage(productImage);
         } catch (Exception e) {
             throw new FileUploadException(e.getMessage(), e);
+        }
+    }
+
+    public void deleteImage(ProductImage productImage) throws IOException {
+        productImageRepository.delete(productImage);
+
+        Path imagePath = Path.of(uploadDirectory, productImage.getFileName());
+        if (Files.exists(imagePath)) {
+            Files.delete(imagePath);
         }
     }
 }
