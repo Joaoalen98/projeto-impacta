@@ -1,6 +1,5 @@
 package com.joaoalencar.projetoimpacta.service.impl;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -8,7 +7,6 @@ import java.util.*;
 
 import com.joaoalencar.projetoimpacta.domain.model.product.ProductImage;
 import com.joaoalencar.projetoimpacta.repository.ProductImageRepository;
-import com.joaoalencar.projetoimpacta.service.dto.ProductImageDTO;
 import com.joaoalencar.projetoimpacta.service.exception.BadRequestException;
 import com.joaoalencar.projetoimpacta.service.exception.FileUploadException;
 import jakarta.transaction.Transactional;
@@ -119,14 +117,6 @@ public class ProductServiceImpl implements ProductService {
                 throw new FileUploadException(e.getMessage(), e);
             }
         });
-    }
-
-    @Override
-    public List<ProductImageDTO> getImages(Integer productId) {
-        return productImageRepository.findByProductId(productId)
-                .stream()
-                .map(pi -> new ProductImageDTO(pi.getId(), "api/files/" + pi.getFileName()))
-                .toList();
     }
 
     @Override

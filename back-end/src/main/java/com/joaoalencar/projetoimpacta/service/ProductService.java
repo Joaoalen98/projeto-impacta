@@ -10,7 +10,6 @@ import java.util.List;
 public interface ProductService extends CrudService<ProductDTO> {
 
     void uploadImage(List<MultipartFile> images, Integer productId);
-    List<ProductImageDTO> getImages(Integer productId);
     Resource loadAsResource(String fileName);
     void deleteImage(Integer productImageId);
 }
