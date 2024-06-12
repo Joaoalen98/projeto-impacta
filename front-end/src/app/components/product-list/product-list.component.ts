@@ -28,7 +28,7 @@ export class ProductListComponent implements OnInit {
           this.products = res;
         },
         error: (res) => {
-          console.log(res);
+          
         }
       });
   }

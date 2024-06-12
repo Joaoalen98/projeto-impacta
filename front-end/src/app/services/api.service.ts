@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ProductDto } from '../interfaces/product-dto';
 import { SupplierDTO } from '../interfaces/supplier-dto';
+import { ProductImageDTO } from '../interfaces/product-image-dto';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private url: string = 'http://localhost:8080/';
+  private url: string = environment.API_URL;
 
   constructor(private http: HttpClient) { }
 
@@ -21,7 +23,7 @@ export class ApiService {
   }
 
   createProduct(product: ProductDto) {
-    return this.http.post<any>(this.url + 'api/v1/products', product);
+    return this.http.post<ProductDto>(this.url + 'api/v1/products', product);
   }
 
   updateProduct(product: ProductDto, id: number) {
@@ -51,5 +53,20 @@ export class ApiService {
 
   deleteSupplier(id: number) {
     return this.http.delete<any>(this.url + `api/v1/suppliers/${id}`);
+  }
+
+  uploadImages(form: FormData, productId: number) {
+    return this.http.post<any>(this.url + `api/v1/products/images/${productId}`, form, {
+      observe: 'events',
+      reportProgress: true
+    });
+  }
+
+  getProductImages(productId: number) {
+    return this.http.get<ProductImageDTO[]>(this.url + `api/v1/products/images/${productId}`)
+  }
+
+  deleteProductImage(productImageId: number) {
+    return this.http.delete<any>(this.url + `api/v1/products/images/${productImageId}`);
   }
 }
