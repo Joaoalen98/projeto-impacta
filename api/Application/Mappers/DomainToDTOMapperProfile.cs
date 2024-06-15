@@ -2,7 +2,7 @@ using api.Domain.DTOs;
 using api.Domain.Entities;
 using AutoMapper;
 
-namespace api.Mappers;
+namespace api.Application.Mappers;
 
 public class DomainToDTOMapperProfile : Profile
 {

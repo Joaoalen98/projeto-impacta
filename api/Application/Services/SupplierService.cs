@@ -1,11 +1,11 @@
+using api.Application.Exceptions;
 using api.Data;
 using api.Domain.DTOs;
 using api.Domain.Entities;
-using api.Exceptions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services;
+namespace api.Application.Services;
 
 public class SupplierService(AppDbContext context, IMapper mapper)
 {

@@ -1,4 +1,4 @@
-﻿namespace api.Exceptions
+﻿namespace api.Application.Exceptions
 {
     public class BadRequestException(string message) : Exception(message)
     {

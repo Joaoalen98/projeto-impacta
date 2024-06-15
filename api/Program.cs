@@ -1,8 +1,8 @@
+using api.Application.Exceptions;
+using api.Application.Mappers;
+using api.Application.Services;
 using api.Data;
 using api.Domain.DTOs;
-using api.Exceptions;
-using api.Mappers;
-using api.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<SupplierService>();
+builder.Services.AddScoped<FileStoreService>();
 
 builder.Services.AddAutoMapper(x =>
 {

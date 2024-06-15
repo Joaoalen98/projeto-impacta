@@ -1,51 +1,23 @@
+using api.Application.Exceptions;
 using api.Data;
 using api.Domain.DTOs;
 using api.Domain.Entities;
-using api.Exceptions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services;
+namespace api.Application.Services;
 
-public class ProductService(AppDbContext context, IMapper mapper, IConfiguration configuration)
+public class ProductService(
+    AppDbContext context,
+    IMapper mapper,
+    FileStoreService fileStoreService)
 {
-    private readonly string fileStore = configuration.GetSection("FilesStorePath").Value!;
-
-    private void DeleteFile(string fileName)
-    {
-        var path = Path.Combine(fileStore, fileName);
-
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
-    }
-
-    private async Task<string> StoreFile(IFormFile image)
-    {
-        var fileName = $"{Guid.NewGuid()}_{image.FileName}";
-        var path = Path.Combine(fileStore, fileName);
-
-        if (!Directory.Exists(fileStore))
-        {
-            Directory.CreateDirectory(fileStore);
-        }
-
-        using var writer = new FileStream(path, FileMode.CreateNew);
-
-        using var stream = new MemoryStream();
-        await image.CopyToAsync(stream);
-
-        await writer.WriteAsync(stream.ToArray());
-
-        return fileName;
-    }
-
     public async Task<ProductDTO> Create(ProductDTO productDTO)
     {
-        await context.AddAsync(mapper.Map<Product>(productDTO));
+        var add = await context.AddAsync(mapper.Map<Product>(productDTO));
         await context.SaveChangesAsync();
 
+        productDTO.Id = add.Entity.Id;
         return productDTO;
     }
 
@@ -85,7 +57,7 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
         foreach (var image in product.Images)
         {
-            DeleteFile(image.FileName);
+            fileStoreService.DeleteFile(image.FileName);
         }
 
         context.Remove(product);
@@ -104,7 +76,7 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
                 throw new BadRequestException("Envie uma imagem valida");
             }
 
-            var fileName = await StoreFile(image);
+            var fileName = await fileStoreService.StoreFile(image);
 
             await context.ProductImages.AddAsync(new ProductImage(fileName, productId, image.ContentType));
             await context.SaveChangesAsync();
@@ -117,7 +89,7 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
             .AsNoTracking()
             .FirstOrDefaultAsync(i => i.Id == productImageId) ?? throw new NotFoundException("Imagem não encontrada");
 
-        DeleteFile(image.FileName);
+        fileStoreService.DeleteFile(image.FileName);
 
         context.Remove(image);
         await context.SaveChangesAsync();
@@ -131,7 +103,7 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
             .AsNoTracking()
             .FirstOrDefaultAsync(i => i.Id == productImageId) ?? throw new BadRequestException($"Imagem {productImageId} não encontrada");
 
-        var bytes = await File.ReadAllBytesAsync(Path.Combine(fileStore, image.FileName));
+        var bytes = await fileStoreService.GetFile(image.FileName);
 
         return new ProductImageBytesDTO(bytes, image.ContentType);
     }
