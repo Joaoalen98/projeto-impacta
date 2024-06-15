@@ -27,7 +27,7 @@ export class ApiService {
   }
 
   updateProduct(product: ProductDto, id: number) {
-    return this.http.post<any>(this.url + `api/v1/products/${id}`, product);
+    return this.http.put<any>(this.url + `api/v1/products/${id}`, product);
   }
 
   deleteProduct(id: number) {
@@ -48,7 +48,7 @@ export class ApiService {
   }
 
   updateSupplier(product: SupplierDTO, id: number) {
-    return this.http.post<any>(this.url + `api/v1/suppliers/${id}`, product);
+    return this.http.put<any>(this.url + `api/v1/suppliers/${id}`, product);
   }
 
   deleteSupplier(id: number) {

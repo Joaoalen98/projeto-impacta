@@ -29,7 +29,7 @@ public class ProductController(ProductService productService) : ControllerBase
         return Ok(await productService.GetById(id));
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     [ProducesResponseType(typeof(ProductDTO), 200)]
     public async Task<IActionResult> Update(ProductDTO productDTO, long id)
     {

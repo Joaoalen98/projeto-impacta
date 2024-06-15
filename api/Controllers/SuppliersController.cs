@@ -29,7 +29,7 @@ public class SuppliersController(SupplierService supplierService) : ControllerBa
         return Ok(await supplierService.GetById(id));
     }
 
-    [HttpPost("{id}")]
+    [HttpPut("{id}")]
     [ProducesResponseType(typeof(SupplierDTO), 200)]
     public async Task<IActionResult> Update(SupplierDTO supplierDTO, long id)
     {
