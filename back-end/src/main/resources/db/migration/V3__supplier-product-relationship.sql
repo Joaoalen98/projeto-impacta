@@ -1,1 +1,0 @@
-ALTER TABLE products ADD supplier_id INTEGER NULL REFERENCES suppliers(id);
