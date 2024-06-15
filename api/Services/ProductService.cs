@@ -1,6 +1,7 @@
 using api.Data;
 using api.Domain.DTOs;
 using api.Domain.Entities;
+using api.Exceptions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,10 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         }
     }
 
-    private async Task StoreFile(IFormFile image)
+    private async Task<string> StoreFile(IFormFile image)
     {
-        var path = Path.Combine(fileStore, image.FileName);
+        var fileName = $"{Guid.NewGuid()}_{image.FileName}";
+        var path = Path.Combine(fileStore, fileName);
 
         if (!Directory.Exists(fileStore))
         {
@@ -35,6 +37,8 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         await image.CopyToAsync(stream);
 
         await writer.WriteAsync(stream.ToArray());
+
+        return fileName;
     }
 
     public async Task Create(ProductDTO productDTO)
@@ -54,43 +58,73 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
     public async Task<ProductDTO?> GetById(long id)
     {
-        return await context.Products
-            .AsNoTracking()
-            .Where(p => p.Id == id)
-            .Include(p => p.Images)
-            .Select(p => mapper.Map<ProductDTO>(p))
-            .FirstAsync();
+        try
+        {
+            return await context.Products
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Include(p => p.Images)
+                .Select(p => mapper.Map<ProductDTO>(p))
+                .FirstAsync();
+        }
+        catch (Exception e)
+        {
+            throw new BadRequestException(e.Message);
+        }
+    }
+
+    public async Task Update(ProductDTO productDTO)
+    {
+        context.Update(productDTO);
+        await context.SaveChangesAsync();
     }
 
     public async Task Delete(long id)
     {
-        var product = await context.Products
-            .Include(p => p.Images)
-            .FirstAsync(p => p.Id == id);
-
-        foreach (var image in product.Images)
+        try
         {
-            DeleteFile(image.FileName);
+            var product = await context.Products
+                .Include(p => p.Images)
+                .FirstAsync(p => p.Id == id);
+
+            foreach (var image in product.Images)
+            {
+                DeleteFile(image.FileName);
+            }
+
+            context.Remove(product);
+
+            await context.SaveChangesAsync();
         }
-
-        context.Remove(product);
-
-        await context.SaveChangesAsync();
+        catch (Exception e)
+        {
+            throw new BadRequestException(e.Message);
+        }
     }
 
     public async Task UploadImages(IEnumerable<IFormFile> images, long productId)
     {
         foreach (var image in images)
         {
-            await StoreFile(image);
+            var fileName = await StoreFile(image);
+
+            await context.ProductImages.AddAsync(new ProductImage(fileName, productId));
+            await context.SaveChangesAsync();
         }
     }
 
     public async Task DeleteImage(string fileName)
     {
-        DeleteFile(fileName);
+        try
+        {
+            DeleteFile(fileName);
 
-        var image = await context.ProductImages.FirstAsync(i => i.FileName == fileName);
-        context.Remove(image);
+            var image = await context.ProductImages.FirstAsync(i => i.FileName == fileName);
+            context.Remove(image);
+        }
+        catch (Exception e)
+        {
+            throw new BadRequestException(e.Message);
+        }
     }
 }

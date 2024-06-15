@@ -1,10 +1,64 @@
+using api.Domain.DTOs;
+using api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
 
 [ApiController]
 [Route("/api/products")]
-public class ProductController : ControllerBase
+public class ProductController(ProductService productService) : ControllerBase
 {
+    [HttpPost]
+    [ProducesResponseType(201)]
+    public async Task<IActionResult> Create(ProductDTO productDTO)
+    {
+        await productService.Create(productDTO);
+        return StatusCode(201);
+    }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<ProductDTO>), 200)]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await productService.GetAll());
+    }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(ProductDTO), 200)]
+    public async Task<IActionResult> GetById(long id)
+    {
+        return Ok(await productService.GetById(id));
+    }
+
+    [HttpPut]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> Update(ProductDTO productDTO)
+    {
+        await productService.Update(productDTO);
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await productService.Delete(id);
+        return Ok();
+    }
+
+    [HttpPost("images/{productId}")]
+    [ProducesResponseType(201)]
+    public async Task<IActionResult> UploadImages([FromForm] IEnumerable<IFormFile> images, long productId)
+    {
+        await productService.UploadImages(images, productId);
+        return StatusCode(201);
+    }
+
+    [HttpDelete("images/{fileName}")]
+    [ProducesResponseType(201)]
+    public async Task<IActionResult> DeleteImage(string fileName)
+    {
+        await productService.DeleteImage(fileName);
+        return StatusCode(201);
+    }
 }
