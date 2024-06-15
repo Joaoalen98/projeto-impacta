@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers;
 
 [ApiController]
-[Route("/api/products")]
+[Route("/api/v1/products")]
 public class ProductController(ProductService productService) : ControllerBase
 {
     [HttpPost]
@@ -30,10 +30,11 @@ public class ProductController(ProductService productService) : ControllerBase
         return Ok(await productService.GetById(id));
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     [ProducesResponseType(200)]
-    public async Task<IActionResult> Update(ProductDTO productDTO)
+    public async Task<IActionResult> Update(ProductDTO productDTO, long id)
     {
+        productDTO.Id = id;
         await productService.Update(productDTO);
         return Ok();
     }
@@ -54,11 +55,11 @@ public class ProductController(ProductService productService) : ControllerBase
         return StatusCode(201);
     }
 
-    [HttpDelete("images/{fileName}")]
+    [HttpDelete("images/{productImageId}")]
     [ProducesResponseType(201)]
-    public async Task<IActionResult> DeleteImage(string fileName)
+    public async Task<IActionResult> DeleteImage(long productImageId)
     {
-        await productService.DeleteImage(fileName);
+        await productService.DeleteImage(productImageId);
         return StatusCode(201);
     }
 }

@@ -27,7 +27,7 @@ public class SupplierService(AppDbContext context, IMapper mapper)
         return await context.Suppliers
             .AsNoTracking()
             .Select(s => mapper.Map<SupplierDTO>(s))
-            .FirstAsync(s => s.Id == id);
+            .FirstOrDefaultAsync(s => s.Id == id) ?? throw new NotFoundException("Fornecedor não encontrado");
     }
 
     public async Task Update(SupplierDTO supplierDTO)
@@ -50,7 +50,7 @@ public class SupplierService(AppDbContext context, IMapper mapper)
 
         var supplier = await context.Suppliers
             .AsNoTracking()
-            .FirstAsync(s => s.Id == id);
+            .FirstOrDefaultAsync(s => s.Id == id) ?? throw new NotFoundException("Fornecedor não encontrado");
 
         context.Remove(supplier);
         await context.SaveChangesAsync();

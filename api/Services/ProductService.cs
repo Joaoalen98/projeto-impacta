@@ -58,19 +58,12 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
     public async Task<ProductDTO?> GetById(long id)
     {
-        try
-        {
-            return await context.Products
-                .AsNoTracking()
-                .Where(p => p.Id == id)
-                .Include(p => p.Images)
-                .Select(p => mapper.Map<ProductDTO>(p))
-                .FirstAsync();
-        }
-        catch (Exception e)
-        {
-            throw new BadRequestException(e.Message);
-        }
+        return await context.Products
+            .AsNoTracking()
+            .Where(p => p.Id == id)
+            .Include(p => p.Images)
+            .Select(p => mapper.Map<ProductDTO>(p))
+            .FirstOrDefaultAsync() ?? throw new NotFoundException("Produto não encontrado");
     }
 
     public async Task Update(ProductDTO productDTO)
@@ -81,25 +74,18 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
     public async Task Delete(long id)
     {
-        try
+        var product = await context.Products
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == id) ?? throw new NotFoundException("Produto não encontrado");
+
+        foreach (var image in product.Images)
         {
-            var product = await context.Products
-                .Include(p => p.Images)
-                .FirstAsync(p => p.Id == id);
-
-            foreach (var image in product.Images)
-            {
-                DeleteFile(image.FileName);
-            }
-
-            context.Remove(product);
-
-            await context.SaveChangesAsync();
+            DeleteFile(image.FileName);
         }
-        catch (Exception e)
-        {
-            throw new BadRequestException(e.Message);
-        }
+
+        context.Remove(product);
+
+        await context.SaveChangesAsync();
     }
 
     public async Task UploadImages(IEnumerable<IFormFile> images, long productId)
@@ -113,18 +99,15 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         }
     }
 
-    public async Task DeleteImage(string fileName)
+    public async Task DeleteImage(long productImageId)
     {
-        try
-        {
-            DeleteFile(fileName);
+        var image = await context.ProductImages
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.Id == productImageId) ?? throw new NotFoundException("Imagem não encontrada");
 
-            var image = await context.ProductImages.FirstAsync(i => i.FileName == fileName);
-            context.Remove(image);
-        }
-        catch (Exception e)
-        {
-            throw new BadRequestException(e.Message);
-        }
+        DeleteFile(image.FileName);
+
+        context.Remove(image);
+        await context.SaveChangesAsync();
     }
 }
