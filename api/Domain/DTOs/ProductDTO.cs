@@ -10,9 +10,3 @@ public class ProductDTO
     public long? SupplierId { get; set; }
     public IEnumerable<ProductImageDTO>? Images { get; set; }
 }
-
-public class ProductImageDTO
-{
-    public long Id { get; set; }
-    public string FileName { get; set; }
-}

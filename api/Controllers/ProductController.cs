@@ -60,10 +60,11 @@ public class ProductController(ProductService productService) : ControllerBase
         return StatusCode(201);
     }
 
-    [HttpGet("images/{fileName}")]
+    [HttpGet("images/{productImageId}")]
     [ProducesResponseType(200)]
-    public async Task<IActionResult> ServeFile(string fileName)
+    public async Task<IActionResult> ServeFile(long productImageId)
     {
-        return File(await productService.ServeFile(fileName), "image/jpg", "jpg");
+        var image = await productService.ServeFile(productImageId);
+        return File(image.File, image.ContentType);
     }
 }

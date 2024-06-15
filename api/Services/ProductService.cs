@@ -106,7 +106,7 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
             var fileName = await StoreFile(image);
 
-            await context.ProductImages.AddAsync(new ProductImage(fileName, productId));
+            await context.ProductImages.AddAsync(new ProductImage(fileName, productId, image.ContentType));
             await context.SaveChangesAsync();
         }
     }
@@ -125,10 +125,16 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         return mapper.Map<ProductImageDTO>(image);
     }
 
-    public async Task<byte[]> ServeFile(string fileName)
+    public async Task<ProductImageBytesDTO> ServeFile(long productImageId)
     {
-        var path = Path.Combine(fileStore, fileName);
-        var bytes = await File.ReadAllBytesAsync(path);
-        return bytes;
+        var image = await context.ProductImages
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.Id == productImageId) ?? throw new BadRequestException($"Imagem {productImageId} não encontrada");
+
+        var bytes = await File.ReadAllBytesAsync(Path.Combine(fileStore, image.FileName));
+
+        return new ProductImageBytesDTO(bytes, image.ContentType);
     }
+
+    public record ProductImageBytesDTO(byte[] File, string ContentType);
 }
