@@ -5,15 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers;
 
 [ApiController]
-[Route("/api/suppliers")]
+[Route("/api/v1/suppliers")]
 public class SuppliersController(SupplierService supplierService) : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType(201)]
+    [ProducesResponseType(typeof(SupplierDTO), 201)]
     public async Task<IActionResult> Create(SupplierDTO supplierDTO)
     {
-        await supplierService.Create(supplierDTO);
-        return StatusCode(201);
+        return StatusCode(201, await supplierService.Create(supplierDTO));
     }
 
     [HttpGet]
@@ -30,19 +29,18 @@ public class SuppliersController(SupplierService supplierService) : ControllerBa
         return Ok(await supplierService.GetById(id));
     }
 
-    [HttpPut]
-    [ProducesResponseType(200)]
-    public async Task<IActionResult> Update(SupplierDTO supplierDTO)
+    [HttpPost("{id}")]
+    [ProducesResponseType(typeof(SupplierDTO), 200)]
+    public async Task<IActionResult> Update(SupplierDTO supplierDTO, long id)
     {
-        await supplierService.Update(supplierDTO);
-        return Ok();
+        supplierDTO.Id = id;
+        return Ok(await supplierService.Update(supplierDTO));
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(200)]
-    public async Task<IActionResult> Create(long id)
+    [ProducesResponseType(typeof(SupplierDTO), 200)]
+    public async Task<IActionResult> Delete(long id)
     {
-        await supplierService.Delete(id);
-        return StatusCode(201);
+        return StatusCode(200, await supplierService.Delete(id));
     }
 }

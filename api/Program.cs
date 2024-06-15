@@ -2,6 +2,8 @@ using api.Data;
 using api.Domain.DTOs;
 using api.Exceptions;
 using api.Mappers;
+using api.Services;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +24,27 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     x.UseNpgsql(builder.Configuration.GetConnectionString("DB"))
         .UseSnakeCaseNamingConvention());
 
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<SupplierService>();
+
 builder.Services.AddAutoMapper(x =>
 {
     x.AddProfile<DomainToDTOMapperProfile>();
 });
 
+builder.Services.AddCors(x =>
+{
+    var policy = new CorsPolicyBuilder()
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .Build();
+
+    x.AddDefaultPolicy(policy);
+});
+
 var app = builder.Build();
+app.UseCors();
 
 app.UseExceptionHandler(exceptionHandlerApp =>
 {

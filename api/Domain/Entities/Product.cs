@@ -7,7 +7,7 @@ namespace api.Domain.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
-        public long SupplierId { get; set; }
+        public long? SupplierId { get; set; }
 
         public Product()
         {
@@ -22,7 +22,7 @@ namespace api.Domain.Entities
             SupplierId = supplierId;
         }
 
-        public Supplier Supplier { get; set; } = default!;
+        public Supplier? Supplier { get; set; } = default!;
         public ICollection<ProductImage> Images  { get; set; } = default!;
     }
 }

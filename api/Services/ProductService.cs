@@ -41,10 +41,12 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         return fileName;
     }
 
-    public async Task Create(ProductDTO productDTO)
+    public async Task<ProductDTO> Create(ProductDTO productDTO)
     {
         await context.AddAsync(mapper.Map<Product>(productDTO));
         await context.SaveChangesAsync();
+
+        return productDTO;
     }
 
     public async Task<IEnumerable<ProductDTO>> GetAll()
@@ -58,21 +60,24 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
     public async Task<ProductDTO?> GetById(long id)
     {
-        return await context.Products
+        var product = await context.Products
             .AsNoTracking()
             .Where(p => p.Id == id)
             .Include(p => p.Images)
-            .Select(p => mapper.Map<ProductDTO>(p))
             .FirstOrDefaultAsync() ?? throw new NotFoundException("Produto não encontrado");
+
+        return mapper.Map<ProductDTO>(product);
     }
 
-    public async Task Update(ProductDTO productDTO)
+    public async Task<ProductDTO> Update(ProductDTO productDTO)
     {
-        context.Update(productDTO);
+        context.Update(mapper.Map<Product>(productDTO));
         await context.SaveChangesAsync();
+
+        return productDTO;
     }
 
-    public async Task Delete(long id)
+    public async Task<ProductDTO> Delete(long id)
     {
         var product = await context.Products
             .Include(p => p.Images)
@@ -86,12 +91,19 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         context.Remove(product);
 
         await context.SaveChangesAsync();
+
+        return mapper.Map<ProductDTO>(product);
     }
 
     public async Task UploadImages(IEnumerable<IFormFile> images, long productId)
     {
         foreach (var image in images)
         {
+            if (!image.ContentType.Contains("image/"))
+            {
+                throw new BadRequestException("Envie uma imagem valida");
+            }
+
             var fileName = await StoreFile(image);
 
             await context.ProductImages.AddAsync(new ProductImage(fileName, productId));
@@ -99,7 +111,7 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
         }
     }
 
-    public async Task DeleteImage(long productImageId)
+    public async Task<ProductImageDTO> DeleteImage(long productImageId)
     {
         var image = await context.ProductImages
             .AsNoTracking()
@@ -109,5 +121,14 @@ public class ProductService(AppDbContext context, IMapper mapper, IConfiguration
 
         context.Remove(image);
         await context.SaveChangesAsync();
+
+        return mapper.Map<ProductImageDTO>(image);
+    }
+
+    public async Task<byte[]> ServeFile(string fileName)
+    {
+        var path = Path.Combine(fileStore, fileName);
+        var bytes = await File.ReadAllBytesAsync(path);
+        return bytes;
     }
 }

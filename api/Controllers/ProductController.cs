@@ -9,11 +9,10 @@ namespace api.Controllers;
 public class ProductController(ProductService productService) : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType(201)]
+    [ProducesResponseType(typeof(ProductDTO), 201)]
     public async Task<IActionResult> Create(ProductDTO productDTO)
     {
-        await productService.Create(productDTO);
-        return StatusCode(201);
+        return StatusCode(201, await productService.Create(productDTO));
     }
 
     [HttpGet]
@@ -30,21 +29,19 @@ public class ProductController(ProductService productService) : ControllerBase
         return Ok(await productService.GetById(id));
     }
 
-    [HttpPut("{id}")]
-    [ProducesResponseType(200)]
+    [HttpPost("{id}")]
+    [ProducesResponseType(typeof(ProductDTO), 200)]
     public async Task<IActionResult> Update(ProductDTO productDTO, long id)
     {
         productDTO.Id = id;
-        await productService.Update(productDTO);
-        return Ok();
+        return Ok(await productService.Update(productDTO));
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(ProductDTO), 200)]
     public async Task<IActionResult> Delete(long id)
     {
-        await productService.Delete(id);
-        return Ok();
+        return Ok(await productService.Delete(id));
     }
 
     [HttpPost("images/{productId}")]
@@ -61,5 +58,12 @@ public class ProductController(ProductService productService) : ControllerBase
     {
         await productService.DeleteImage(productImageId);
         return StatusCode(201);
+    }
+
+    [HttpGet("images/{fileName}")]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> ServeFile(string fileName)
+    {
+        return File(await productService.ServeFile(fileName), "image/jpg", "jpg");
     }
 }

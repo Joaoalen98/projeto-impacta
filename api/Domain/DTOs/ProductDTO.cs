@@ -7,12 +7,12 @@ public class ProductDTO
     public string Description { get; set; }
     public decimal Price { get; set; }
     public int Stock { get; set; }
-    public long SupplierId { get; set; }
-    public IEnumerable<ProductImageDTO>? ProductImages { get; set; }
+    public long? SupplierId { get; set; }
+    public IEnumerable<ProductImageDTO>? Images { get; set; }
 }
 
 public class ProductImageDTO
 {
+    public long Id { get; set; }
     public string FileName { get; set; }
-    public long ProductId { get; set; }
 }
