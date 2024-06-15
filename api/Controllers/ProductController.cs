@@ -22,29 +22,29 @@ public class ProductController(ProductService productService) : ControllerBase
         return Ok(await productService.GetAll());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{productId}")]
     [ProducesResponseType(typeof(ProductDTO), 200)]
-    public async Task<IActionResult> GetById(long id)
+    public async Task<IActionResult> GetById(long productId)
     {
-        return Ok(await productService.GetById(id));
+        return Ok(await productService.GetById(productId));
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{productId}")]
     [ProducesResponseType(typeof(ProductDTO), 200)]
-    public async Task<IActionResult> Update(ProductDTO productDTO, long id)
+    public async Task<IActionResult> Update(ProductDTO productDTO, long productId)
     {
-        productDTO.Id = id;
+        productDTO.Id = productId;
         return Ok(await productService.Update(productDTO));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{productId}")]
     [ProducesResponseType(typeof(ProductDTO), 200)]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete(long productId)
     {
-        return Ok(await productService.Delete(id));
+        return Ok(await productService.Delete(productId));
     }
 
-    [HttpPost("images/{productId}")]
+    [HttpPost("{productId}/images")]
     [ProducesResponseType(201)]
     public async Task<IActionResult> UploadImages([FromForm] IEnumerable<IFormFile> images, long productId)
     {
@@ -54,7 +54,7 @@ public class ProductController(ProductService productService) : ControllerBase
 
     [HttpDelete("images/{productImageId}")]
     [ProducesResponseType(201)]
-    public async Task<IActionResult> DeleteImage(long productImageId)
+    public async Task<IActionResult> DeleteImage(long productId, long productImageId)
     {
         await productService.DeleteImage(productImageId);
         return StatusCode(201);

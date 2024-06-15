@@ -22,25 +22,25 @@ public class SuppliersController(SupplierService supplierService) : ControllerBa
         return Ok(await supplierService.GetAll());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{supplierId}")]
     [ProducesResponseType(typeof(SupplierDTO), 200)]
-    public async Task<IActionResult> GetAll(long id)
+    public async Task<IActionResult> GetAll(long supplierId)
     {
-        return Ok(await supplierService.GetById(id));
+        return Ok(await supplierService.GetById(supplierId));
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{supplierId}")]
     [ProducesResponseType(typeof(SupplierDTO), 200)]
-    public async Task<IActionResult> Update(SupplierDTO supplierDTO, long id)
+    public async Task<IActionResult> Update(SupplierDTO supplierDTO, long supplierId)
     {
-        supplierDTO.Id = id;
+        supplierDTO.Id = supplierId;
         return Ok(await supplierService.Update(supplierDTO));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{supplierId}")]
     [ProducesResponseType(typeof(SupplierDTO), 200)]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete(long supplierId)
     {
-        return StatusCode(200, await supplierService.Delete(id));
+        return StatusCode(200, await supplierService.Delete(supplierId));
     }
 }
