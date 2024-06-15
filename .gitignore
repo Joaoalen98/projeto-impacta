@@ -33,4 +33,4 @@ build/
 .vscode/
 
 back-end/src/main/resources/static
-/.vs/api
+*.vs
