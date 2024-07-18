@@ -1,3 +1,4 @@
+using api;
 using api.Application.Exceptions;
 using api.Application.Mappers;
 using api.Application.Services;
@@ -79,5 +80,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.ApplyEFCoreMigrations();
 
 app.Run();

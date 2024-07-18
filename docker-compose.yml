@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  projeto-impacta-database:
+    image: postgres:17beta2-alpine3.20
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=db_projeto_impacta
+    ports:
+      - 5432:5432
+
+  projeto-impacta-api:
+    depends_on:
+      - projeto-impacta-database
+    build: ./api
+    environment:
+      - ConnectionStrings:DB=User ID=postgres;Password=root;Host=projeto-impacta-database;Port=5432;Database=db_projeto_impacta;
+    ports:
+      - 8080:8080
+
+  projeto-impacta-front-end:
+    depends_on:
+      - projeto-impacta-api
+    build: ./front-end
+    environment:
+      - API_URL=http://projeto-impacta-api:8080
+    ports:
+      - 4200:80
