@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   projeto-impacta-database:
-    image: postgres:17beta2-alpine3.20
+    image: postgres:16-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
