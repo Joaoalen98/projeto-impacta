@@ -7,6 +7,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=db_projeto_impacta
+    volumes:
+      - projeto-impacta-database:/var/lib/postgresql/data
     ports:
       - 5432:5432
 
@@ -23,7 +25,8 @@ services:
     depends_on:
       - projeto-impacta-api
     build: ./front-end
-    environment:
-      - API_URL=http://projeto-impacta-api:8080
     ports:
       - 4200:80
+
+volumes:
+  projeto-impacta-database:
